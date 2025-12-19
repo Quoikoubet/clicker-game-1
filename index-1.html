@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mon Clicker Game</title>
+  <title>Clicker Game</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -31,7 +31,7 @@
       background: rgba(0,0,0,0.3);
       padding: 15px;
       margin: 10px auto;
-      max-width: 300px;
+      max-width: 320px;
       border-radius: 10px;
     }
   </style>
@@ -39,42 +39,90 @@
 <body>
   <h1>🖱️ Clicker Game</h1>
   <div id="score">Score : 0</div>
+  <div id="auto">Points / seconde : 0</div>
   <button onclick="clickButton()">CLIQUER</button>
 
   <div class="shop">
     <h2>Boutique</h2>
+
     <div class="upgrade">
       <p>+1 par clic</p>
-      <p>Coût : <span id="cost">10</span></p>
-      <button onclick="buyUpgrade()">Acheter</button>
+      <p>Coût : <span id="clickCost">10</span></p>
+      <button onclick="buyClickUpgrade()">Acheter</button>
+    </div>
+
+    <div class="upgrade">
+      <p>+1 point / seconde</p>
+      <p>Coût : <span id="autoCost">50</span></p>
+      <button onclick="buyAutoUpgrade()">Acheter</button>
     </div>
   </div>
 
   <script>
     let score = 0;
     let clickPower = 1;
-    let upgradeCost = 10;
+    let autoPower = 0;
+    let clickCost = 10;
+    let autoCost = 50;
+
+    // Charger la sauvegarde
+    if (localStorage.getItem("clickerSave")) {
+      const save = JSON.parse(localStorage.getItem("clickerSave"));
+      score = save.score;
+      clickPower = save.clickPower;
+      autoPower = save.autoPower;
+      clickCost = save.clickCost;
+      autoCost = save.autoCost;
+    }
 
     function clickButton() {
       score += clickPower;
       updateUI();
     }
 
-    function buyUpgrade() {
-      if (score >= upgradeCost) {
-        score -= upgradeCost;
-        clickPower += 1;
-        upgradeCost = Math.floor(upgradeCost * 1.5);
+    function buyClickUpgrade() {
+      if (score >= clickCost) {
+        score -= clickCost;
+        clickPower++;
+        clickCost = Math.floor(clickCost * 1.5);
         updateUI();
-      } else {
-        alert("Pas assez de points !");
       }
     }
 
+    function buyAutoUpgrade() {
+      if (score >= autoCost) {
+        score -= autoCost;
+        autoPower++;
+        autoCost = Math.floor(autoCost * 1.7);
+        updateUI();
+      }
+    }
+
+    // Points automatiques
+    setInterval(() => {
+      score += autoPower;
+      updateUI();
+    }, 1000);
+
+    // Sauvegarde automatique
+    setInterval(() => {
+      localStorage.setItem("clickerSave", JSON.stringify({
+        score,
+        clickPower,
+        autoPower,
+        clickCost,
+        autoCost
+      }));
+    }, 2000);
+
     function updateUI() {
       document.getElementById("score").innerText = "Score : " + score;
-      document.getElementById("cost").innerText = upgradeCost;
+      document.getElementById("auto").innerText = "Points / seconde : " + autoPower;
+      document.getElementById("clickCost").innerText = clickCost;
+      document.getElementById("autoCost").innerText = autoCost;
     }
+
+    updateUI();
   </script>
 </body>
 </html>
