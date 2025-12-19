@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon Clicker Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 { font-size: 3rem; }
+    #score { font-size: 2rem; margin: 20px 0; }
+    button {
+      padding: 20px 40px;
+      font-size: 1.5rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #ffcc00;
+      transition: transform 0.1s ease;
+    }
+    button:active { transform: scale(0.95); }
+    .shop {
+      margin-top: 40px;
+    }
+    .upgrade {
+      background: rgba(0,0,0,0.3);
+      padding: 15px;
+      margin: 10px auto;
+      max-width: 300px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🖱️ Clicker Game</h1>
+  <div id="score">Score : 0</div>
+  <button onclick="clickButton()">CLIQUER</button>
+
+  <div class="shop">
+    <h2>Boutique</h2>
+    <div class="upgrade">
+      <p>+1 par clic</p>
+      <p>Coût : <span id="cost">10</span></p>
+      <button onclick="buyUpgrade()">Acheter</button>
+    </div>
+  </div>
+
+  <script>
+    let score = 0;
+    let clickPower = 1;
+    let upgradeCost = 10;
+
+    function clickButton() {
+      score += clickPower;
+      updateUI();
+    }
+
+    function buyUpgrade() {
+      if (score >= upgradeCost) {
+        score -= upgradeCost;
+        clickPower += 1;
+        upgradeCost = Math.floor(upgradeCost * 1.5);
+        updateUI();
+      } else {
+        alert("Pas assez de points !");
+      }
+    }
+
+    function updateUI() {
+      document.getElementById("score").innerText = "Score : " + score;
+      document.getElementById("cost").innerText = upgradeCost;
+    }
+  </script>
+</body>
+</html>
